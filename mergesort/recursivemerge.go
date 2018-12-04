@@ -2,9 +2,10 @@ package mergesort
 
 import (
 	"sort" // standard sort package, provides SearchInts to do a binary search on a []int
+	"github.com/paulbuis/sorts/types"
 )
 
-func RecursiveMerge(A []int, B []int, C []int) {
+func RecursiveMerge(A types.SliceType, B types.SliceType, C types.SliceType) {
 	lenA := len(A)
 	lenB := len(B)
 	if lenA < lenB {
@@ -12,16 +13,17 @@ func RecursiveMerge(A []int, B []int, C []int) {
 		lenA, lenB = lenB, lenA
 	}
 
-	if lenA <= 1000 { // better threashold?, note that 0 does not work!
+	if lenA <= 10000 { // better threashold?, note that 0 does not work!
 		IterativeMerge(A,B,C) // non-recursive
 		return
 	}
 
 	midAindex := lenA / 2
-	midBindex := sort.SearchInts(B, A[midAindex])
+	searchTarget := A[midAindex]
+	midBindex := sort.Search(len(B), func(i int) bool { return !types.Less(B[i],searchTarget) })
 	midCindex := midAindex + midBindex
 
-	C[midCindex] = A[midAindex]
+	C[midCindex] = searchTarget
 	RecursiveMerge(A[:midAindex], B[:midBindex], C[:midCindex])
 	RecursiveMerge(A[midAindex+1:], B[midBindex:], C[midCindex+1:])
 }

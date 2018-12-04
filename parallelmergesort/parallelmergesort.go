@@ -3,12 +3,13 @@ package parallelmergesort
 import (
 	"github.com/paulbuis/sorts/mergesort"
 	"github.com/paulbuis/sorts/parallel"
+	"github.com/paulbuis/sorts/types"
 	"sync"
 )
 
-type parallelMergeSortFunc func(slice []int, tmp []int) sync.Locker
+type parallelMergeSortFunc func(slice types.SliceType, tmp types.SliceType) sync.Locker
 
-type ParallelMergeFunc func (leftDone sync.Locker, rightDone sync.Locker, left []int, right []int, tmp []int) sync.Locker
+type ParallelMergeFunc func (leftDone sync.Locker, rightDone sync.Locker, left types.SliceType, right types.SliceType, tmp types.SliceType) sync.Locker
 
 type ParallelMergeSorter struct {
 	seqMergeSorter mergesort.MergeSorter
@@ -20,7 +21,7 @@ func NewParallelMergeSorter(seqMergeSorter mergesort.MergeSorter, pMerge Paralle
 }
 
 func Merge(merge mergesort.MergeFunc) ParallelMergeFunc {
-	return func (leftDone sync.Locker, rightDone sync.Locker, left []int, right []int, tmp []int) sync.Locker {
+	return func (leftDone sync.Locker, rightDone sync.Locker, left types.SliceType, right types.SliceType, tmp types.SliceType) sync.Locker {
 		mergeDone := parallel.NewDone()
 		go func() { 
 			leftDone.Lock()
@@ -32,8 +33,8 @@ func Merge(merge mergesort.MergeFunc) ParallelMergeFunc {
 	}
 }
 
-func (pms ParallelMergeSorter)Sort(slice []int) {
-	tmp := make([]int, len(slice))
+func (pms ParallelMergeSorter) Sort(slice types.SliceType) {
+	tmp := make(types.SliceType, len(slice))
     mergeSort := parallelMergeSort(pms.seqMergeSorter, pms.pMerge)
 	allDone := mergeSort(slice, tmp)
 	allDone.Lock()
@@ -42,8 +43,8 @@ func (pms ParallelMergeSorter)Sort(slice []int) {
 func parallelMergeSort(seqMergeSorter mergesort.MergeSorter, pMerge ParallelMergeFunc) parallelMergeSortFunc {
 	// note: creating a closure to return
 	var inner parallelMergeSortFunc
-	inner = func (slice []int, tmp []int) sync.Locker {
-		if len(slice) < 250 { // find a better threashold!
+	inner = func (slice types.SliceType, tmp types.SliceType) sync.Locker {
+		if len(slice) < 25000 { // find a better threashold!
 	    	seqMergeSorter.MergeSort(slice, tmp)
 			return &sync.Mutex{} //created in Unlocked state
 		}

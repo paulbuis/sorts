@@ -1,6 +1,10 @@
 package mergesort
 
-func IterativeMerge(left []int, right []int, slice []int) {
+import (
+	"github.com/paulbuis/sorts/types"
+)
+
+func IterativeMerge(left types.SliceType, right types.SliceType, slice types.SliceType) {
 	indexSlice := 0
 	indexLeft := 0
 	indexRight := 0
@@ -10,7 +14,7 @@ func IterativeMerge(left []int, right []int, slice []int) {
 	for indexLeft < lenLeft && indexRight < lenRight {
 		leftValue := left[indexLeft]
 		rightValue := right[indexRight]
-		if leftValue < rightValue {
+		if types.Less(left[indexLeft], right[indexRight]) {
 			slice[indexSlice] = leftValue
 			indexLeft += 1
 		} else {
@@ -20,15 +24,11 @@ func IterativeMerge(left []int, right []int, slice []int) {
 		indexSlice += 1
 	}
 
-	for indexLeft < lenLeft  {
-		slice[indexSlice] = left[indexLeft]
-		indexSlice += 1
-		indexLeft += 1
+	if indexLeft < lenLeft {
+		copy(slice[indexSlice:], left[indexLeft:])
 	}
 	
-	for indexRight < lenRight {
-		slice[indexSlice] = right[indexRight];
-		indexSlice += 1
-		indexRight += 1
+	if indexRight < lenRight {
+		copy(slice[indexSlice:], right[indexRight:])
 	}
 }

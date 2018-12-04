@@ -1,7 +1,10 @@
 package insertionsort
 
+import (
+	"github.com/paulbuis/sorts/types"
+)
 
-func Sort(slice[]int) {
+func Sort(slice types.SliceType) {
 	left := 0
 	right := len(slice) - 1
 

@@ -1,20 +1,20 @@
 package main
 
 import (
+	"github.com/paulbuis/sorts/types"
 	"sort"
 	"time"
 )
 
-func benchtest(sortFun func ([]int), originalList []int, name string) {
-	sortList := make([]int, len(originalList), len(originalList))
+func benchtest(sortFun types.InPlaceSortFunc, originalList types.SliceType) time.Duration {
+	sortList := make(types.SliceType, len(originalList), len(originalList))
 	copy(sortList, originalList)
 	start := time.Now()
 	sortFun(sortList)
 	elapsed := time.Since(start)
-	out.Printf("%s\nElapsed time %s\n", name, elapsed)
-	if !sort.IntsAreSorted(sortList) {
+	if !sort.IsSorted(sortList) {
 		out.Printf("*** sort unsuccessful! ***\n")
 	}
-	out.Println()
+	return elapsed
 	// also check that it is a sorting of originalList !!!
 }
