@@ -27,8 +27,8 @@ func run(n int, maxThreads int) {
 	var elapsed time.Duration
 	
 	elapsed = benchtest(quickSort, testSlice)
-	out.Printf("Library Quick Sort\nElapsed time: %s\n\n", elapsed)
+	out.Printf("GoLang Library Quick Sort\nElapsed time: %s\n\n", elapsed)
 	elapsed = benchtest(dualPivotQuicksort, testSlice)
-	out.Printf("Library Stable Sort\nElapsed time: %s\n\n", elapsed)
+	out.Printf("Your Dual-Pivot Quicksort\nElapsed time: %s\n\n", elapsed)
 }
 
