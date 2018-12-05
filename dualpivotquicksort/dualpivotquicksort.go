@@ -6,7 +6,7 @@ import (
 )
 
 func Sort(slice types.SliceType) {
-	dualpivot(slice, 0, slice.Len(), 3)
+	dualpivot(slice, 0, len(slice)-1, 3)
 }
 
 // remember to use SliceType's Swap() and Less() methods!
