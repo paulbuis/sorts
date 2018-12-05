@@ -62,9 +62,18 @@ func Less(a, b int32) bool {
 }
 
 // should be inlined if invoked on something of type types.SliceType
-// but not inlined if invoked via type sort.Interface !!
-func (slice SliceType)Less (i,j int) bool {
+// but not inlined if invoked via type sort.Interface or types.Interface!!
+func (slice SliceType) Less (i,j int) bool {
 	return slice[i] < slice[j]
+}
+
+func (slice SliceType) Equal(i, j int) bool {
+	return slice[i] == slice[j]
+}
+
+type Interface interface {
+	sort.Interface
+	Equal(i,j int) bool
 }
 
 // ReSlice also conforms to sort.Interface, but ...
